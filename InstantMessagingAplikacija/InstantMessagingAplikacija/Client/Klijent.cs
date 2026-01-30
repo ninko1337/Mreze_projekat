@@ -11,12 +11,19 @@ namespace Client
     {
         static void Main(string[] args)
         {
+            Console.Write("Unesi ime ili nadimak : ");
+            string ime = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(ime))
+            {
+                Console.WriteLine("Ime ili nadimak ne mogu biti prazni , unesi opet : ");
+                ime = Console.ReadLine();
+            }
 
-            string serverIp = "127.0.0.1";
-            int udpPort = 9000;
+            ime = ime.Trim();
 
-            string resp = UdpClientService.Prijava(serverIp, udpPort);
+            string resp = UdpClientService.Prijava("127.0.0.1",9000);
             Console.WriteLine("Od servera : " + resp);
+
             Console.ReadLine();
         }
     }

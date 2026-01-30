@@ -2,6 +2,6 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
   </Folder>
-  <Project Path="InstantMessagingAplikacija/Client/Client.csproj" />
-  <Project Path="InstantMessagingAplikacija/Server.csproj" />
+  <Project Path="InstantMessagingAplikacija/Client/Client.csproj" Id="8fdb8c97-f674-4b90-b157-2c9be4c90b43" />
+  <Project Path="InstantMessagingAplikacija/Server.csproj" Id="187ca0d4-bdb1-4d28-a4fa-ccd68521601e" />
 </Solution>

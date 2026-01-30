@@ -13,6 +13,10 @@ namespace InstantMessagingAplikacija
     {
         static void Main(string[] args)
         {
+            var manager = new ServerManager();
+
+            manager.Konfigurisi();
+
             int udpPort = 9000;
             int tcpPort = 9001;
 
