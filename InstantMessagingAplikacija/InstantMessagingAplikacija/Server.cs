@@ -13,6 +13,7 @@ namespace InstantMessagingAplikacija
     {
         static void Main(string[] args)
         {
+            //konfiguracija servera 
             var manager = new ServerManager();
 
             manager.Konfigurisi();
@@ -20,11 +21,18 @@ namespace InstantMessagingAplikacija
             int udpPort = 9000;
             int tcpPort = 9001;
 
+            //pokretanje udplistenera
             UdpListener udp = new UdpListener(udpPort, tcpPort);
-
             new Thread(udp.Start).Start();
 
-            Console.WriteLine("Server radi, enter za izlaz");
+            //pokretanje tcp servera
+            TcpServer tcp = new TcpServer(tcpPort, manager);
+            new Thread(tcp.Start).Start();
+
+            Console.WriteLine($"[SISTEM] UDP Server sluša na portu {udpPort}");
+            Console.WriteLine($"[SISTEM] TCP Server sluša na portu {tcpPort}");
+            Console.WriteLine("Server radi, pritisnite Enter za izlaz...");
+
             Console.ReadLine();
 
         }
