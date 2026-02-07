@@ -83,6 +83,8 @@ namespace Client
                     //salje se poruka
                     Console.Write("Unesi poruku: ");
                     string poruka = Console.ReadLine();
+                    string[] nadimakCount = ime.Split(' ');
+                    poruka = UdpClientService.Sifrovanje(poruka, nadimakCount.Length + 1);
                     writer.WriteLine("PORUKA " + poruka);
 
                     //odgovor servera

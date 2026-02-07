@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Network
 {
@@ -90,7 +91,8 @@ namespace Server.Network
                     PrekiniVezu(s);
                     return;
                 }
-
+                string dekodirano = Desifruj(buffer.ToString(), 3);
+                
                 string tekst = Encoding.UTF8.GetString(buffer, 0, primljeno);
                 sesija.Bafer.Append(tekst);
 
@@ -174,6 +176,32 @@ namespace Server.Network
             _sesije.Remove(s);
             _sviSocketi.Remove(s);
             s.Close();
+        }
+
+        private string Desifruj(string tekst, int key)
+        {
+            char ch;
+            char[] data = tekst.ToCharArray();
+            for (int i = 0; i < data.Length; i++)
+            {
+                ch = data[i];
+                if (ch >= 'a' && ch <= 'z')
+                {
+
+                    ch = (char)((ch - 'a' - key) % 26 + 'a');
+                }
+                else if (ch >= 'A' && ch <= 'Z')
+                {
+                    ch = (char)((ch - 'A' - key) % 26 + 'A');
+                }
+                else
+                {
+                }
+                ch = (char)((ch - '0' - key) % 10 + '0');
+                data[i] = ch;
+            }
+            tekst = new string(data);
+            return tekst;
         }
     }
 }
