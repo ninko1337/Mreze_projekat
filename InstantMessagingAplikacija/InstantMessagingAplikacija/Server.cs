@@ -23,17 +23,21 @@ namespace InstantMessagingAplikacija
 
             //pokretanje udplistenera
             UdpListener udp = new UdpListener(udpPort, tcpPort);
-            new Thread(udp.Start).Start();
+            Thread udpThread = new Thread(udp.Start);
+            udpThread.IsBackground = true;
+            udpThread.Start();
 
             //pokretanje tcp servera
             TcpServer tcp = new TcpServer(tcpPort, manager);
-            new Thread(tcp.Start).Start();
+            
 
             Console.WriteLine($"[SISTEM] UDP Server sluša na portu {udpPort}");
             Console.WriteLine($"[SISTEM] TCP Server sluša na portu {tcpPort}");
             Console.WriteLine("Server radi, pritisnite Enter za izlaz...");
 
-            Console.ReadLine();
+            
+
+            tcp.Start();
 
         }
 

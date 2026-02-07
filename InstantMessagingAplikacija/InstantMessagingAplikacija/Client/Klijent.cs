@@ -93,7 +93,7 @@ namespace Client
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Greska pri tcp povezivanju - " + ex.Message);
+                Console.WriteLine("Greska pri tcp povezivanju - " + ex.ToString());
             }
 
             Console.WriteLine("\nKraj - pritisni ENTER za izlaz");
