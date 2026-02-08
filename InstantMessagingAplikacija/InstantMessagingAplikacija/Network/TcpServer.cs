@@ -163,27 +163,31 @@ namespace Server.Network
                     if (linija.StartsWith("PORUKA "))
                     {
                         string poruka = linija.Substring(7).Trim();
+
+                        // izracunaj kljuc
+                        int key = sesija.Nadimak.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
+
+                        // desifruj
+                        string dekodirano = Sifrovanje.Desifruj(poruka, key);
+
+                        // ispisi desifrovano
                         string vreme = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                        Console.WriteLine($"[{vreme}]-[{sesija.IzabraniServer}]:[{sesija.OdabraniKanal}]:[{poruka}]-[{sesija.Nadimak}]");
+                        Console.WriteLine($"[{vreme}]-[{sesija.IzabraniServer}]:[{sesija.OdabraniKanal}]:[{dekodirano}]-[{sesija.Nadimak}]");
 
                         Posalji(s, "Ok");
 
-                        int key = (sesija.Nadimak.Split(' ')).Length;
-                        string dekodirano = Sifrovanje.Desifruj(poruka, key);
-                        string nazivKanala = sesija.OdabraniKanal;
-
-                        
-                        Models.Kanal kanal = _serverManager.Serveri[sesija.IzabraniServer].Find(k => k.Naziv == nazivKanala);
+                        // cuvanje poruke
+                        Models.Kanal kanal = _serverManager.Serveri[sesija.IzabraniServer].Find(k => k.Naziv == sesija.OdabraniKanal);
                         if (kanal != null)
                         {
                             kanal.Poruke.Add(new Models.Poruka
                             {
                                 Posaljilac = sesija.Nadimak,
                                 Sadrzaj = dekodirano,
-                                Vreme = DateTime.Now.ToString()
+                                Vreme = vreme
                             });
                         }
-                        PrekiniVezu(s); // Po tvom klijentu, ovde je kraj sesije
+                        PrekiniVezu(s);
                     }
                     break;
             }
@@ -202,30 +206,6 @@ namespace Server.Network
             s.Close();
         }
 
-        private string Desifruj(string tekst, int key)
-        {
-            char ch;
-            char[] data = tekst.ToCharArray();
-            for (int i = 0; i < data.Length; i++)
-            {
-                ch = data[i];
-                if (ch >= 'a' && ch <= 'z')
-                {
-
-                    ch = (char)((ch - 'a' - key) % 26 + 'a');
-                }
-                else if (ch >= 'A' && ch <= 'Z')
-                {
-                    ch = (char)((ch - 'A' - key) % 26 + 'A');
-                }
-                else
-                {
-                }
-                ch = (char)((ch - '0' - key) % 10 + '0');
-                data[i] = ch;
-            }
-            tekst = new string(data);
-            return tekst;
-        }
+        
     }
 }
