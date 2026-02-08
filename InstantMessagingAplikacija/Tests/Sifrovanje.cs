@@ -15,6 +15,7 @@ namespace Tests
             string ulaz = "abc";
             int pomeraj = 1;
             string ocekivano = "bcd";
+            Sifrovanje s = new Sifrovanje();
             // Act
             string rezultat = Sifrovanje.Sifruj(ulaz, pomeraj);
 
@@ -28,9 +29,7 @@ namespace Tests
             string ulaz = "bcd";
             int pomeraj = 1;
             string ocekivano = "abc";
-          
             // Act
-            string rezultat = Sifrovanje.Desifruj(ulaz, pomeraj);
 
             // Assert
             Assert.AreEqual(ocekivano, rezultat);

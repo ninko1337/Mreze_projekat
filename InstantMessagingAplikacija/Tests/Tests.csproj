@@ -18,9 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\ClassLibrary.csproj" />
-    <ProjectReference Include="..\InstantMessagingAplikacija\Client\Client.csproj" />
-    <ProjectReference Include="..\InstantMessagingAplikacija\Server.csproj" />
+    <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
   </ItemGroup>
 
   <ItemGroup>
