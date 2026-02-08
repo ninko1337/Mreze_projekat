@@ -22,11 +22,11 @@ namespace ClassLibrary
                 {
                     data[i] = (char)((ch - 'A' + key) % 26 + 'A');
                 }
-                else if (ch >= '0' && ch <= '9') // Šifruje i brojeve ako su baš cifre
+                else if (ch >= '0' && ch <= '9') 
                 {
                     data[i] = (char)((ch - '0' + key) % 10 + '0');
                 }
-                // Ako je razmak ili znak, ne dira ga (nema više else koji kvari sve)
+                
             }
             return new string(data);
         }
@@ -39,7 +39,7 @@ namespace ClassLibrary
                 char ch = data[i];
                 if (ch >= 'a' && ch <= 'z')
                 {
-                    // Dodajemo 26 da rezultat (ch-a-key) ne bi bio negativan pre %
+                    
                     data[i] = (char)((ch - 'a' - (key % 26) + 26) % 26 + 'a');
                 }
                 else if (ch >= 'A' && ch <= 'Z')
@@ -48,7 +48,7 @@ namespace ClassLibrary
                 }
                 else if (ch >= '0' && ch <= '9')
                 {
-                    // Dodajemo 10 za cifre
+                    
                     data[i] = (char)((ch - '0' - (key % 10) + 10) % 10 + '0');
                 }
             }
