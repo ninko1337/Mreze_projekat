@@ -54,5 +54,11 @@
     <Folder Include="Models\" />
     <Folder Include="Services\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClassLibrary1\ClassLibrary.csproj">
+      <Project>{72708daa-eead-4e86-b8a8-d32fd96855c5}</Project>
+      <Name>ClassLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

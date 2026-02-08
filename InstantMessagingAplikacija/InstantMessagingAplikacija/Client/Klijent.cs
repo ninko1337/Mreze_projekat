@@ -1,4 +1,5 @@
-﻿using Client.Network;
+﻿using ClassLibrary;
+using Client.Network;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -84,7 +85,7 @@ namespace Client
                     Console.Write("Unesi poruku: ");
                     string poruka = Console.ReadLine();
                     string[] nadimakCount = ime.Split(' ');
-                    poruka = UdpClientService.Sifrovanje(poruka, nadimakCount.Length + 1);
+                    poruka = Sifrovanje.Sifruj(poruka, nadimakCount.Length);
                     writer.WriteLine("PORUKA " + poruka);
 
                     //odgovor servera

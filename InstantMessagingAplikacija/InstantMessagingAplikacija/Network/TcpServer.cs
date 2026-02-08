@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using ClassLibrary;
+
 
 namespace Server.Network
 {
@@ -91,7 +93,7 @@ namespace Server.Network
                     PrekiniVezu(s);
                     return;
                 }
-                string dekodirano = Desifruj(buffer.ToString(), 3);
+                
                 
                 string tekst = Encoding.UTF8.GetString(buffer, 0, primljeno);
                 sesija.Bafer.Append(tekst);
@@ -108,6 +110,12 @@ namespace Server.Network
                     }
                     sesija.Bafer.Clear();
                 }
+
+
+                //_serverManager.Serveri[sesija.IzabraniServer].Find(k => k.Naziv == nazivKanala);
+
+
+
             }
             catch
             {
@@ -159,6 +167,22 @@ namespace Server.Network
                         Console.WriteLine($"[{vreme}]-[{sesija.IzabraniServer}]:[{sesija.OdabraniKanal}]:[{poruka}]-[{sesija.Nadimak}]");
 
                         Posalji(s, "Ok");
+
+                        int key = (sesija.Nadimak.Split(' ')).Length;
+                        string dekodirano = Sifrovanje.Desifruj(poruka, key);
+                        string nazivKanala = sesija.OdabraniKanal;
+
+                        
+                        Models.Kanal kanal = _serverManager.Serveri[sesija.IzabraniServer].Find(k => k.Naziv == nazivKanala);
+                        if (kanal != null)
+                        {
+                            kanal.Poruke.Add(new Models.Poruka
+                            {
+                                Posaljilac = sesija.Nadimak,
+                                Sadrzaj = dekodirano,
+                                Vreme = DateTime.Now.ToString()
+                            });
+                        }
                         PrekiniVezu(s); // Po tvom klijentu, ovde je kraj sesije
                     }
                     break;
