@@ -12,6 +12,7 @@ using static System.Net.Mime.MediaTypeNames;
 using ClassLibrary;
 
 
+
 namespace Server.Network
 {
     internal class TcpServer
@@ -21,6 +22,8 @@ namespace Server.Network
 
         //lista svih aktivnih uticnica
         private List<Socket> _sviSocketi = new List<Socket>();
+
+        private List<AktivnostKlijenta> _aktivnosti = new List<AktivnostKlijenta>();
 
         private Dictionary<Socket, KlijentSesija> _sesije = new Dictionary<Socket,KlijentSesija>();
 
@@ -143,11 +146,14 @@ namespace Server.Network
                         sesija.IzabraniServer = linija.Substring(7).Trim();
                         if (_serverManager.Serveri.ContainsKey(sesija.IzabraniServer))
                         {
-                            var kanali = _serverManager.Serveri[sesija.IzabraniServer].Select(k => k.Naziv);
+                            
+                            var kanali = _serverManager.Serveri[sesija.IzabraniServer]
+                                .OrderByDescending(k => k.Poruke.Count > 0)
+                                .Select(k => k.Naziv);
+
                             Posalji(s, "KANALI : " + string.Join(",", kanali));
                             sesija.Faza = "CEKA_KANAL";
                         }
-                        else { Posalji(s, "ERROR ne postoji server"); PrekiniVezu(s); }
                     }
                     break;
 
@@ -155,6 +161,19 @@ namespace Server.Network
                     if (linija.StartsWith("KANAL "))
                     {
                         sesija.OdabraniKanal = linija.Substring(6).Trim();
+                        var kanal = _serverManager.Serveri[sesija.IzabraniServer].Find(k => k.Naziv == sesija.OdabraniKanal);
+
+                        if (kanal != null)
+                        {
+                            foreach (var p in kanal.Poruke)
+                            {
+                                Posalji(s, $"ISTORIJA [{p.Vreme}]-[{p.Posaljilac}]: [{p.Sadrzaj}]");
+                            }
+                        }
+
+                        
+                        Posalji(s, "KRAJ_ISTORIJE");
+
                         sesija.Faza = "CEKA_PORUKU";
                     }
                     break;
@@ -164,19 +183,21 @@ namespace Server.Network
                     {
                         string poruka = linija.Substring(7).Trim();
 
-                        // izracunaj kljuc
+                       
                         int key = sesija.Nadimak.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
 
-                        // desifruj
+                        
                         string dekodirano = Sifrovanje.Desifruj(poruka, key);
 
-                        // ispisi desifrovano
+                        
                         string vreme = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                        
                         Console.WriteLine($"[{vreme}]-[{sesija.IzabraniServer}]:[{sesija.OdabraniKanal}]:[{dekodirano}]-[{sesija.Nadimak}]");
 
                         Posalji(s, "Ok");
 
-                        // cuvanje poruke
+                        
                         Models.Kanal kanal = _serverManager.Serveri[sesija.IzabraniServer].Find(k => k.Naziv == sesija.OdabraniKanal);
                         if (kanal != null)
                         {
@@ -187,6 +208,19 @@ namespace Server.Network
                                 Vreme = vreme
                             });
                         }
+
+                        
+                        var akt = _aktivnosti.FirstOrDefault(a => a.Nadimak == sesija.Nadimak);
+                        if (akt == null)
+                        {
+                            _aktivnosti.Add(new AktivnostKlijenta { Nadimak = sesija.Nadimak, PoslednjaAktivnost = vreme });
+                        }
+                        else
+                        {
+                            akt.PoslednjaAktivnost = vreme;
+                        }
+                        
+
                         PrekiniVezu(s);
                     }
                     break;

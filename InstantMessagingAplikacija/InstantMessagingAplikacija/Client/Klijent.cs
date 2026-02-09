@@ -78,8 +78,26 @@ namespace Client
                     Console.Write("Izaberi kanal (unesi naziv): ");
                     string izabraniKanal = Console.ReadLine().Trim();
 
-                    //salje se izbor kanala
+                    
                     writer.WriteLine("KANAL " + izabraniKanal);
+
+                    
+
+                    string odgovor;
+                    while (true)
+                    {
+                        odgovor = reader.ReadLine();
+
+                        
+                        if (odgovor == null || odgovor == "KRAJ_ISTORIJE")
+                            break;
+
+                        if (odgovor.StartsWith("ISTORIJA "))
+                        {
+                            Console.WriteLine(odgovor.Substring(9));
+                        }
+                    }
+                    Console.WriteLine("--- Istorija učitana, možete kucati ---");
 
                     //salje se poruka
                     Console.Write("Unesi poruku: ");
